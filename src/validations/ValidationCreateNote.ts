@@ -1,44 +1,39 @@
 import { Schema } from "express-validator";
 
-export class ValidationCreateUser {
+export class ValidationCreateNote {
     
     validation: Schema;
 
     constructor() {
         this.validation = {
-            email: {
-                isEmail : {
-                    errorMessage: 'Invalid Email', 
-                },
+            user_id : {
                 notEmpty: {
                     options: {
                         ignore_whitespace: true
                     }
                 }
             },
-
-            name: {
+            title : {
                 notEmpty: {
                     options: {
                         ignore_whitespace: true
                     }
                 }
             },
-
-            password: {
-                isLength : {
+            body : {
+                notEmpty: {
                     options: {
-                        max: 12,
-                        min: 8
+                        ignore_whitespace: true
                     }
-                },
+                }
+            },
+            date : {
                 notEmpty: {
                     options: {
                         ignore_whitespace: true
                     }
                 }
             }
-
         }
     }
 

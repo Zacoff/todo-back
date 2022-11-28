@@ -18,9 +18,10 @@ model User {
 model Note {
   note_id Int     @id @default(autoincrement())
   user_id String
+  title   String
   body    String
   date    String
   check   Boolean @default(false)
-  title   String
   author  User    @relation(fields: [user_id], references: [user_id])
 }
+

@@ -9,6 +9,8 @@ export class UserControllers {
     static async create(req: Request, res: Response, next: NextFunction) {
         const {email, name, password} = req.body as CreateUserDTO;
 
+        console.log('Creating User');
+
         try {
             const errors = validationResult(req);
 
@@ -17,6 +19,8 @@ export class UserControllers {
             const userCreated = await UserServices.create({email, name, password});   
 
             const userTransform = plainToInstance(User, userCreated);
+
+            console.log(`User created: ${userTransform.user_id}`)
 
             return res.status(201).json(userTransform);
 
@@ -28,9 +32,13 @@ export class UserControllers {
     static async delete(req: Request, res: Response, next: NextFunction) {
         const { user_id } = req.body
 
+        console.log('Deleting User')
+
         try {
 
             await UserServices.delete(user_id);
+
+            console.log('User delete');
             res.status(200).json({"Message" : "User delete"});
 
         } catch (error) {
@@ -42,11 +50,14 @@ export class UserControllers {
     static async findById(req: Request, res: Response, next: NextFunction) {
         const { user_id } = req.params
 
+        console.log(`Finding for ${user_id}`)
+
         try {
 
             const user = await UserServices.findUser({user_id});
             const userTransform = plainToInstance(User, user);
 
+            console.log(`User find : ${user_id}`)
             res.status(200).json(userTransform);
 
         } catch (error) {

@@ -10,7 +10,6 @@ import { NotExistsError } from '../errors/NotExists'
 dotenv.config()
 const prisma = new PrismaClient()
 
-
 export class UserServices {
     static async create({email, name, password} : CreateUserDTO) {
         

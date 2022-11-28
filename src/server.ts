@@ -5,6 +5,8 @@ import cors from 'cors';
 import { CustomError } from './errors/CustomError';
 import { noteRouter } from './routes/NoteRoutes';
 import { ValidationErrors } from './errors/ValidationErrors';
+import { PrismaClient } from '@prisma/client';
+import { ErrorMiddleware } from './middlewares/ErrorsMiddleware';
 
 dotenv.config();
 const app = express();
@@ -17,20 +19,26 @@ app.use(cors({
 
 app.use(express.json());
 
-app.use(userRouter);
+try {
+  
+  initDB()
 
-app.use(noteRouter);
+  app.use(userRouter);
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    if(err instanceof CustomError && err instanceof ValidationErrors) {
-        return res.status(err.errorStatus).json({'Validation Errors' : JSON.parse(err.getErrorMessage())})
-    }else if(err instanceof CustomError) {
-        return res.status(err.errorStatus).json({message: err.getErrorMessage()})
-    }
-    console.log(err)
-      res.status(500).json({status: 'error' , message: "Internal Server Error"})
-  })
+  app.use(noteRouter);
+  
+  app.use(ErrorMiddleware.get);
 
   app.listen(process.env.PORT, () => {
     console.log(`Server is running at https://localhost:${process.env.PORT}`);
-})
+  })   
+
+} catch (error) {
+  
+}
+
+async function initDB() {
+  const prisma = new PrismaClient()
+
+  await prisma.$connect()
+}
